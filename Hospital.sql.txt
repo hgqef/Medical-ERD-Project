@@ -1,0 +1,75 @@
+CREATE TABLE Consultant
+(
+  Id INT NOT NULL,
+  Name VARCHAR(100) NOT NULL,
+  PRIMARY KEY (Id)
+);
+
+CREATE TABLE Nurse
+(
+  Number INT NOT NULL,
+  Name VARCHAR(100) NOT NULL,
+  Address VARCHAR(100) NOT NULL,
+  Ward_Id INT NOT NULL,
+  PRIMARY KEY (Number),
+  FOREIGN KEY (Ward_Id) REFERENCES Ward(Id) // warning: circular dependency detected
+);
+
+CREATE TABLE Ward
+(
+  Id INT NOT NULL,
+  Name VARCHAR(100) NOT NULL,
+  Nurse_Number INT NOT NULL,
+  PRIMARY KEY (Id),
+  FOREIGN KEY (Nurse_Number) REFERENCES Nurse(Number) // warning: circular dependency detected,
+  UNIQUE (Nurse_Number)
+);
+
+CREATE TABLE Patient
+(
+  Name VARCHAR(100) NOT NULL,
+  DOB DATE NOT NULL,
+  Id INT NOT NULL,
+  Id_Consultant INT NOT NULL,
+  Ward_Id INT NOT NULL,
+  PRIMARY KEY (Id),
+  FOREIGN KEY (Id_Consultant) REFERENCES Consultant(Id),
+  FOREIGN KEY (Ward_Id) REFERENCES Ward(Id) // warning: circular dependency detected
+);
+
+CREATE TABLE Brand_Drug
+(
+  Code INT NOT NULL,
+  Brand VARCHAR(100) NOT NULL,
+  PRIMARY KEY (Code)
+);
+
+CREATE TABLE Drug
+(
+  Code INT NOT NULL,
+  Dosage VARCHAR(20) NOT NULL,
+  Code INT NOT NULL,
+  PRIMARY KEY (Code),
+  FOREIGN KEY (Code) REFERENCES Brand_Drug(Code)
+);
+
+CREATE TABLE Cosultant_Patient
+(
+  Id_Con INT NOT NULL,
+  Id_Patient INT NOT NULL,
+  PRIMARY KEY (Id_Con, Id_Patient)
+);
+
+CREATE TABLE Gives
+(
+  Dosage_Value VARCHAR(20) NOT NULL,
+  Date DATE NOT NULL,
+  Time VARCHAR(20) NOT NULL,
+  Dosage_Unite VARCHAR(20) NOT NULL,
+  Drug_Code INT NOT NULL,
+  Nurse_Number INT NOT NULL,
+  Patient_Id INT NOT NULL,
+  FOREIGN KEY (Drug_Code) REFERENCES Drug(Code),
+  FOREIGN KEY (Nurse_Number) REFERENCES Nurse(Number),
+  FOREIGN KEY (Patient_Id) REFERENCES Patient(Id)
+);
